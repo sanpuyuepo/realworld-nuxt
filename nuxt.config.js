@@ -3,6 +3,7 @@
  */
 
 module.exports = {
+  target: 'static',
   router: {
     // 路由导航高亮: 精确匹配
     linkExactActiveClass: 'active',
