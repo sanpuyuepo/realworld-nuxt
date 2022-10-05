@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-  target: 'static',
+  // target: 'static',
   router: {
     // 路由导航高亮: 精确匹配
     linkExactActiveClass: 'active',
@@ -60,8 +60,8 @@ module.exports = {
   },
   plugins: ['~/plugins/request.js', '~/plugins/dayjs.js'],
   server: {
-    host: 'localhost', // 本地环境
-    // host: '0.0.0.0', //生产环境
+    // host: 'localhost', // 本地环境
+    host: '0.0.0.0', //生产环境
     port: 3000
   }
 }

@@ -19,7 +19,6 @@ export const actions = {
   // 会在服务端渲染期间自动调用
   // 作用: 初始化容器数据, 传递给客户端使用
   nuxtServerInit({ commit }, { req }) {
-    console.log('nuxtServerInit...')
     let user = null
     if (req.headers.cookie) {
       const parsed = cookieParser.parse(req.headers.cookie)
@@ -27,6 +26,7 @@ export const actions = {
         user = JSON.parse(parsed.user)
       } catch (error) {
         // invalid cookie found
+        console.log(error)
       }
     }
     // 提交 mutation 修改 state 状态
