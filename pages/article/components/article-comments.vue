@@ -57,6 +57,7 @@
 <script>
 import { getArticleComments, createArticleComment, deleteArticleComment } from '@/api/article'
 import { mapState } from 'vuex'
+import _ from 'lodash'
 
 export default {
   name: 'ArticleComments',
@@ -84,8 +85,15 @@ export default {
     async getComments() {
       const { data } = await getArticleComments(this.article.slug)
       this.comments = data.comments
+      this.comments.sort((a, b) => {
+        return b.id - a.id
+      })
+
     },
     async postComment () {
+      if (!this.comment.body) {
+        return
+      }
       await createArticleComment(this.article.slug, {comment: this.comment})
       this.comment.body = ''
       this.getComments()
