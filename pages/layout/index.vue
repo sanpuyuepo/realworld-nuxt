@@ -43,7 +43,7 @@
                 }">
                 <img
                   class="user-pic"
-                  src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairDreads02&accessoriesType=Prescription01&hairColor=Platinum&facialHairType=Blank&clotheType=Hoodie&clotheColor=Heather&eyeType=Hearts&eyebrowType=RaisedExcitedNatural&mouthType=Default&skinColor=Light"
+                  :src="user.image"
                   alt="" />{{ user.username }}
               </nuxt-link>
             </li>
