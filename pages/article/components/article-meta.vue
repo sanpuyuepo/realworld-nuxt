@@ -13,7 +13,8 @@
       <span class="date">{{ article.createAt | date() }}</span>
     </div>
     <!-- if is not logged-in user -->
-    <template v-if="user.username !== article.author.username">
+    <!-- <template v-if="user.username !== article.author.username"> -->
+    <template v-if="!user || user.username !== article.author.username">
       <button
         :disabled="isLoading"
         class="btn btn-sm btn-outline-secondary"
@@ -97,11 +98,41 @@ export default {
       })
     },
     async followAuthor () {
+      if (!this.user) {
+        this.$router.push({
+          name: 'login',
+          query: {
+            redirect: {
+              name: 'article',
+              params: {
+                slug: this.article.slug
+              }
+            }
+          }
+          
+        })
+        return
+      }
       const followOrNot = this.article.author.following ? unfollowUser : followUser
       await followOrNot(this.article.author.username)
       this.sendData()
     },
     async favoritePost () {
+      if (!this.user) {
+        this.$router.push({
+          name: 'login',
+          query: {
+            redirect: {
+              name: 'article',
+              params: {
+                slug: this.article.slug
+              }
+            }
+          }
+          
+        })
+        return
+      }
       console.log('favorite...')
       const favoriteArticleOrNot = this.article.favorited ? deleteFavorite : addFavorite
       await favoriteArticleOrNot(this.article.slug)

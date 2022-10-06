@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="card comment-form">
+    <form class="card comment-form" v-if="user">
       <div class="card-block">
         <textarea
           v-model="comment.body"
@@ -15,6 +15,32 @@
         <button class="btn btn-sm btn-primary" @click.prevent="postComment">Post Comment</button>
       </div>
     </form>
+
+    <div style="margin-bottom: 10px;" v-else>
+      <p>
+        <nuxt-link :to="{
+          name: 'login',
+          query: {
+            redirect: {
+              name: 'article',
+              params: {
+                slug: this.article.slug
+              }
+            }
+          }
+        }">Sign in</nuxt-link> or 
+        <nuxt-link :to="{
+          name: 'register',
+          query: {
+            redirect: {
+              name: 'article',  
+              params: {
+                slug: this.article.slug
+              }
+            }
+          }
+        }">Sign up</nuxt-link> to add comments on this article</p>
+    </div>
 
     <div
       class="card"
@@ -47,7 +73,7 @@
         </nuxt-link>
         <span class="date-posted">{{ comment.createdAt | date() }}</span>
         <span class="mod-options">
-          <i v-if="user.username === article.author.username" class="ion-trash-a" @click.prevent="deleteComment(comment.id)"></i>
+          <i v-if="user?.username === article.author.username" class="ion-trash-a" @click.prevent="deleteComment(comment.id)"></i>
         </span>
       </div>
     </div>

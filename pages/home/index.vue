@@ -200,6 +200,14 @@ export default {
   watchQuery: ['page', 'tag', 'tab'],
   methods: {
     async onFavorite(article) {
+      // 判断用户是否登录，没有登录则不能点赞
+      if (!this.user) {
+        // 跳转到登录页
+        this.$router.push({
+          name: 'login'
+        })
+        return
+      }
       article.favoriteDisabled = true
       if (article.favorited) {
         // 取消点赞
