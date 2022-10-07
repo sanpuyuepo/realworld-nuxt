@@ -109,7 +109,6 @@ export default {
         // 设置完成后可以在浏览器的调试工具-application-Cookie 中看到设置的cookie
         Cookie.set('user', JSON.stringify(data.user))
         // 跳转首页
-        console.log(this.$route)
         this.$router.push(this.$route.query.redirect || '/')
       } catch (error) {
         this.errors = error.response.data.errors

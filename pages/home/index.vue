@@ -62,7 +62,10 @@
                 <div class="info">
                   <nuxt-link
                     class="author"
-                    to=""
+                    :to="{
+                      name: 'profile',
+                      params: { username: article.author.username }
+                    }"
                     >{{ article.author.username }}</nuxt-link
                   >
                   <span class="date">{{ article.createdAt | date() }}</span>

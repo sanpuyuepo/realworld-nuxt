@@ -16,7 +16,7 @@
             </button>
             <button v-else class="btn btn-sm btn-outline-secondary action-btn" @click.prevent="followTheUser">
               <i class="ion-plus-round"></i>
-              &nbsp; follow xxx
+              &nbsp; {{followInfo}}
             </button>
           </div>
         </div>
@@ -59,7 +59,9 @@
                   <nuxt-link to="" class="author">{{article.author.username}}</nuxt-link>
                   <span class="date">{{article.createAt | date()}}</span>
                 </div>
-                <button class="btn btn-outline-primary btn-sm pull-xs-right">
+                <button 
+                  class="btn btn-outline-primary btn-sm pull-xs-right" 
+                  @click="favoriteArticleOrNot(article.slug, article.favorited)">
                   <i class="ion-heart"></i> {{article.favoritesCount}}
                 </button>
               </div>
@@ -116,14 +118,15 @@
 
 <script>
 import { getProfile, followUser, unfollowUser } from '@/api/profile'
-import { getArticles } from '@/api/article'
+import { getArticles, addFavorite, deleteFavorite } from '@/api/article'
+import _ from 'lodash'
 
 export default {
-  middleware: 'auth',
+  // middleware: 'auth',
   name: 'UserProfile',
   async asyncData({ params, query, store }) {
     const username = params.username
-    const loggedUser = store.state.user.username
+    const loggedUser = store.state.user?.username || null
     const page = Number.parseInt(query.page) || 1
     const limit = 20
     const tab = query.tab || 'my_articles'
@@ -152,6 +155,9 @@ export default {
     },
     isSameUser () {
       return this.loggedUser === this.username
+    },
+    followInfo () {
+      return this.profile.following ? `Unfollow ${this.username}` : `Follow ${this.username}`
     }
   },
   watchQuery: ['page', 'tab'],
@@ -161,11 +167,41 @@ export default {
         name: 'settings',
       })
     },
-    followTheUser () {
-      console.log('following...')
+    needLogin () {
+      if (!this.loggedUser) {
+        this.$router.push({
+          name: 'login',
+          query: {
+            redirect: {
+              name: 'profile',
+              params: {
+                username: this.username
+              }
+            }
+          }
+        })
+        return true
+      }
+      return false
     },
-    unfollowTheUser () {
-      console.log('unfollow')
+    async followTheUser () {
+      if (this.needLogin()) return
+      else {
+        // 判断是否为follow状态
+        const followOrNot = this.profile.following ? unfollowUser : followUser
+        const { data } = await followOrNot(this.username)
+        this.profile = data.profile
+      }
+    },
+    async favoriteArticleOrNot (slug, favorited) {
+      if (this.needLogin()) return
+      else {
+        const favoriteOrNot = favorited ? deleteFavorite : addFavorite
+        const { data } = await favoriteOrNot(slug)
+        const artilce = data.article
+        const artilceIndex = _.findIndex(this.articles, ['slug', artilce.slug])
+        this.articles.splice(artilceIndex, 1, artilce)
+      }
     }
   }
 }
